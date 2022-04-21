@@ -25,6 +25,7 @@ def run(protocol: protocol_api.ProtocolContext):
     right_pipette = protocol.load_instrument('p1000_single_gen2', 'right', tip_racks=[tiprack_1000])
 
     # commands
+    protocol.comment('Begining heat shock protocol.')
     #Step 1 - Get the heatblock to temp and wait for user
     heat_block.set_temperature(42) #Note new version waits automatically.
 
@@ -34,6 +35,7 @@ def run(protocol: protocol_api.ProtocolContext):
     left_pipette.dispense(2, ecoli_plate['A1'].bottom())
     left_pipette.mix(3, 10)
     left_pipette.drop_tip()
+    protocol.comment('Incubating for 10 minutes.')
     protocol.delay(minutes=10)
 
     #Step 3 - Transfer to headblock and incubate for 45s
@@ -41,6 +43,7 @@ def run(protocol: protocol_api.ProtocolContext):
     left_pipette.aspirate(20, ecoli_plate['A1'])
     left_pipette.dispense(20, heat_plate['A1'])
     left_pipette.drop_tip()
+    protocol.comment('Incubating for 45 seconds.')
     protocol.delay(seconds=45)
 
     #Step 4 - Transfer back to block
@@ -48,6 +51,8 @@ def run(protocol: protocol_api.ProtocolContext):
     left_pipette.aspirate(20, heat_plate['A1'])
     left_pipette.dispense(20, ecoli_plate['A1'])
     left_pipette.drop_tip()
+    protocol.comment('Incubating for 1 minute.')
+    protocol.delay(minutes=1)
 
     #Step 5 - Add LB
     row = ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8']
@@ -56,4 +61,5 @@ def run(protocol: protocol_api.ProtocolContext):
     for well in row:
         right_pipette.dispense(150, ecoli_plate[well])
     right_pipette.drop_tip()
+    protocol.comment('Protocol finished.')
     
