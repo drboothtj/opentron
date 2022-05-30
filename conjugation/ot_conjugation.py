@@ -75,11 +75,10 @@ def get_order_of_operations():
 def get_string(list_):
     string_ = ''.join([str(item) for item in list_])
 
-
 def run(protocol: protocol_api.ProtocolContext):
     #labware -----update
-    conjugant_plate = protocol.load_labware('opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap', '1')
-    e_coli_plate = protocol.load_labware('opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap', '2')
+    conjugant_plate = protocol.load_labware('opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap', '2')
+    e_coli_plate = protocol.load_labware('opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap', '3')
     mixture_plate = protocol.load_labware('opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap', '4')
     tiprack_20 = protocol.load_labware('opentrons_96_tiprack_20ul', '10')
     tiprack_1000 = protocol.load_labware('opentrons_96_tiprack_1000ul', '9')
@@ -94,16 +93,18 @@ def run(protocol: protocol_api.ProtocolContext):
         right_pipette.pick_up_tip()
         for i in range(0,len(e_coli_coordinates)):
             if e_coli_coordinates[i] == e_coli:
-                right_pipette.aspirate(250, e_coli_plate[e_coli])
-                right_pipette.dispense(250, mixture_plate[mixture_coordinates[i]]) 
+                right_pipette.aspirate(200, e_coli_plate[e_coli])
+                right_pipette.dispense(200, mixture_plate[mixture_coordinates[i]])
+                pipette.blow_out()
         right_pipette.drop_tip()
     #transfer conjugants
     for conjugant in set(conjugant_coordinates):
         right_pipette.pick_up_tip()
         for i in range(0,len(conjugant_coordinates)):
             if conjugant_coordinates[i] == conjugant:
-                right_pipette.aspirate(250, conjugant_plate[conjugant])
-                right_pipette.dispense(250, mixture_plate[mixture_coordinates[i]]) 
+                right_pipette.aspirate(200, conjugant_plate[conjugant].bottom(+2))
+                right_pipette.dispense(200, mixture_plate[mixture_coordinates[i]].top(-2))
+                pipette.blow_out()
         right_pipette.drop_tip()
 
     
