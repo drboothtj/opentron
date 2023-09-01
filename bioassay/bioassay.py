@@ -2,12 +2,15 @@
 Temporary protocol for opentron bioassays
 
 Functions:
-    !!!
+    get_labware(protocol)
+    get_destinations(plates: List, counter: int) -> List
+    run(protocol)
 '''
 
 from opentrons import protocol_api
+from typing import List
 
-VOLUME_TO_ASSAY = 100
+VOLUME_TO_ASSAY = 90
 
 #metadata needs to be defined outside of a function
 metadata = {
@@ -21,12 +24,12 @@ def get_labware(protocol):
     '''
     returns labware specific to this protocol
         arguments:
-            protocol
+            protocol: the protocol as defined by the run function
         returns:
-            library_plates: !!!
-            test_plates: !!!
-            tip_racks: !!!
-            pipette: 
+            library_plates: a list of labware objects reprisenting the library plates
+            test_plates: a list of a labware objects reprisenting the test (i.e. target) plates
+            tip_racks: a list of labware objects for the tip racks
+            pipette: instrument object for the pippette
     '''
     library_plate_1 = protocol.load_labware('corning_12_wellplate_6.9ml_flat', 1)
     library_plate_2 =protocol.load_labware('corning_12_wellplate_6.9ml_flat', 2)
@@ -40,13 +43,13 @@ def get_labware(protocol):
     tip_rack_2 = protocol.load_labware('opentrons_96_tiprack_300ul', 8)
     tip_racks = [tip_rack_1, tip_rack_2]
     pipette = protocol.load_instrument(
-        instrument_name='p300_single_gen2',
+        instrument_name='p300_single',
         mount='right',
         tip_racks=tip_racks
         )
     return library_plates, test_plates, tip_racks, pipette
 
-def get_destinations(plates, counter):
+def get_destinations(plates: List, counter: int) -> List:
     '''
     gets wells of a specific index from multiple test plates
         arguments:
